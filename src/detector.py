@@ -1,5 +1,33 @@
 import cv2
 import os
+import numpy as np
+
+def safe_imread(path: str):
+    """Lê imagem de forma segura no Windows mesmo com acentos/espaços no caminho."""
+    try:
+        img = cv2.imread(path)
+        if img is not None:
+            return img
+        with open(path, "rb") as f:
+            data = np.frombuffer(f.read(), dtype=np.uint8)
+            return cv2.imdecode(data, cv2.IMREAD_COLOR)
+    except Exception:
+        return None
+
+def safe_imwrite(path: str, img):
+    """Grava imagem de forma segura no Windows mesmo com acentos/espaços no caminho."""
+    try:
+        ext = os.path.splitext(path)[1]
+        if not ext:
+            ext = ".jpg"
+        success, buf = cv2.imencode(ext, img)
+        if success:
+            with open(path, "wb") as f:
+                f.write(buf)
+            return True
+    except Exception:
+        pass
+    return cv2.imwrite(path, img)
 
 class BirdDetector:
     def __init__(self, config):
@@ -20,7 +48,7 @@ class BirdDetector:
             )
 
     def process_image(self, img_path, out_raw_dir, out_ann_dir):
-        img = cv2.imread(img_path)
+        img = safe_imread(img_path)
         if img is None:
             return False
 
@@ -42,9 +70,12 @@ class BirdDetector:
                 cv2.rectangle(img_ann, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         if detected:
+            os.makedirs(out_raw_dir, exist_ok=True)
+            os.makedirs(out_ann_dir, exist_ok=True)
             filename = os.path.basename(img_path)
-            cv2.imwrite(os.path.join(out_raw_dir, filename), img)
-            cv2.imwrite(os.path.join(out_ann_dir, filename), img_ann)
+            safe_imwrite(os.path.join(out_raw_dir, filename), img)
+            safe_imwrite(os.path.join(out_ann_dir, filename), img_ann)
             return True
 
         return False
+
