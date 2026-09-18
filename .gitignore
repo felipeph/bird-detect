@@ -1,0 +1,20 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Privacy and data
+test_images/
+test_images_detected/
+output/
+logs/
+
+# Benchmark
+src/benchmark.py
+benchmark_results.csv

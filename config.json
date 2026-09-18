@@ -1,0 +1,7 @@
+{
+    "algo": "MOG2",
+    "history": 100,
+    "threshold": 512.0,
+    "detectShadows": false,
+    "min_contour_area": 50
+}
