@@ -18,3 +18,4 @@ logs/
 # Benchmark
 src/benchmark.py
 benchmark_results.csv
+*.pt

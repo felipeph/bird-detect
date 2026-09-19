@@ -5,11 +5,7 @@ import sys
 CONFIG_PATH = "config.json"
 
 DEFAULT_CONFIG = {
-    "algo": "MOG2",
-    "history": 100,
-    "threshold": 512.0,
-    "detectShadows": False,
-    "min_contour_area": 50,
+    "yolo_confidence": 0.25,
     "last_source_dir": None,
     "recent_projects": [],
     "ntfy_topic": "fph-bird-detect",
@@ -63,7 +59,7 @@ def add_recent_project(config: dict, path: str):
 
 def configure_menu():
     config = load_config()
-    editable_keys = ["algo", "history", "threshold", "detectShadows", "min_contour_area", "ntfy_topic", "enable_toast", "enable_sound"]
+    editable_keys = ["yolo_confidence", "ntfy_topic", "enable_toast", "enable_sound"]
     while True:
         print("\n" + "=" * 50)
         print("         MENU DE CONFIGURACOES GERAIS")

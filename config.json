@@ -3,12 +3,13 @@
     "history": 100,
     "threshold": 512.0,
     "detectShadows": false,
-    "min_contour_area": 50,
+    "min_contour_area": 500,
     "last_source_dir": "C:\\4\\Timelapses",
     "recent_projects": [
         "C:\\4\\Timelapses"
     ],
     "ntfy_topic": "fph-bird-detect",
     "enable_toast": true,
-    "enable_sound": true
+    "enable_sound": true,
+    "yolo_confidence": 0.1
 }

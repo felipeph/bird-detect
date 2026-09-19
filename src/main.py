@@ -50,17 +50,14 @@ def print_banner(config: dict, current_source: str, img_count: int, project_id: 
     """Exibe cabeçalho decorado com metadados do projeto ativo e parâmetros."""
     print("\n" + "=" * 66)
     print("         BIRD DETECT - DETECÇÃO INTELIGENTE DE AVES")
-    print("   Visão Computacional OpenCV (MOG2 / KNN) & Pipeline Autônomo")
+    print("   Visão Computacional IA (YOLOv8 Medium) & Pipeline Autônomo")
     print("=" * 66)
     
     source_display = os.path.abspath(current_source) if current_source else "Nenhuma pasta selecionada (Use a opção [1])"
     proj_display = project_id if project_id else "Nenhum projeto ativo"
     stages_summary = get_completed_stages_summary(project_id) if project_id else "Nenhuma"
     
-    algo = config.get("algo", "MOG2")
-    history = config.get("history", 100)
-    thresh = config.get("threshold", 512.0)
-    min_area = config.get("min_contour_area", 50)
+    conf = config.get("yolo_confidence", 0.25)
     ntfy_topic = config.get("ntfy_topic", "fph-bird-detect")
     
     print(f" PROJETO           : {proj_display}")
@@ -72,7 +69,7 @@ def print_banner(config: dict, current_source: str, img_count: int, project_id: 
         print(f"   • Fotos na Pasta    : {img_count} imagem(ns) encontrada(s)")
         print(f"   • Saída (Detectadas): {os.path.join(source_display, 'detected')}")
         print(f"   • Saída (Anotadas)  : {os.path.join(source_display, 'annotated')}")
-    print(f"   • Algoritmo OpenCV  : {algo} (hist={history}, thresh={thresh}, min_area={min_area}px)")
+    print(f"   • Inteligência Art. : YOLOv8 Medium (Confiança={conf * 100:.0f}%)")
     print(f"   • Notificações      : Toast Windows + Som + ntfy ({ntfy_topic})")
     print("=" * 66)
 
@@ -196,7 +193,7 @@ def run_detection_pipeline(source_dir: str, config: dict, is_test: bool = False)
             found = detector.process_image(img_path, out_detected, out_annotated)
             if found:
                 detected_count += 1
-            ui.update(1, status_msg=f"Aves detectadas: {detected_count}")
+            ui.update(1, status_msg=f"Aves detectadas: {detected_count}", current_filename=os.path.basename(img_path))
             
         elapsed_sec = int(time.time() - start_time)
         elapsed_str = str(datetime.timedelta(seconds=elapsed_sec))
@@ -265,7 +262,7 @@ def interactive_menu():
             print("  [1] Selecionar Pasta de Imagens (Digitar ou Arrastar e Soltar)")
             print("  [2] Selecionar Projeto Recente")
             print("  [3] Modo Teste Rápido (Executar validação em 'test_images')")
-            print("  [4] Menu de Configurações (OpenCV MOG2/KNN, limiares, ntfy)")
+            print("  [4] Menu de Configurações (YOLO, ntfy, som)")
             print("  [0] Sair")
             print("=" * 66)
             
@@ -300,7 +297,7 @@ def interactive_menu():
             break
 
 def main():
-    parser = argparse.ArgumentParser(description="Bird Detect - Detector de Pássaros (Background Subtraction)")
+    parser = argparse.ArgumentParser(description="Bird Detect - Detector de Pássaros (YOLOv8 AI)")
     parser.add_argument("--input", default=None, help="Diretório com as imagens de entrada (execução direta)")
     parser.add_argument("--out-detected", default=None, help="Diretório de saída para imagens brutas")
     parser.add_argument("--out-annotated", default=None, help="Diretório de saída para imagens anotadas")
